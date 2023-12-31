@@ -60,6 +60,7 @@ var myNoise2 = FastNoiseLite.new()
 var player
 
 func _ready():
+	# Initializes the noise generators with random seeds and sets their frequency
 	myNoise.seed = randi()
 	myNoise2.seed = randi()
 	myNoise.frequency = 0.01
@@ -73,6 +74,7 @@ func _process(_delta):
 	
 
 func mapping_noise_values_to_coordinates(noiseValueX,noiseValueY, p, texture_loc): #the range of noseValue is [-1,1]
+	# Converts noise values to coordinates and picks a random texture based on defined probabilities
 	var x = floor((noiseValueX + 1) * 50)
 	var y = floor((noiseValueY + 1) * 50)
 	var p_total = 0
@@ -87,6 +89,8 @@ func mapping_noise_values_to_coordinates(noiseValueX,noiseValueY, p, texture_loc
 			return texture_loc[texture].pick_random()
 		
 func generate_chunk(pos):
+	# Generates a chunk of the map around the given position
+	# uses noise values to determine the type of terrain for each tile
 	
 	for x in range(width):
 		for y in range(height):
@@ -101,8 +105,9 @@ func generate_chunk(pos):
 				loaded_chunks.append(Vector2i(pos.x, pos.y))
 
 
-# Function to unload chunks that are too far away
 func unload_distant_chunks(player_pos):
+	# Removes chunks that are far from the player to optimize performance
+
 	# Set the distance threshold to at least 2 times the width to limit visual glitches
 	# Higher values unload chunks further away
 	var unload_distance_threshold = (width * 2) + 1
@@ -114,14 +119,14 @@ func unload_distant_chunks(player_pos):
 			clear_chunk(chunk)
 			loaded_chunks.erase(chunk)
 
-# Function to clear a chunk
 func clear_chunk(pos):
+	# Function to clear a chunk
 	for x in range(width):
 		for y in range(height):
 			set_cell(0, Vector2i(pos.x - (width/2) + x, pos.y - (height/2) + y), -1, Vector2(-1, -1), -1)
 
-# Function to calculate distance between two points
 func get_dist(p1, p2):
+	# Function to calculate distance between two points
 	var resultant = p1 - p2
 	return sqrt(resultant.x ** 2 + resultant.y ** 2)
 
