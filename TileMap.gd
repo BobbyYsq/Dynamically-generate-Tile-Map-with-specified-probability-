@@ -52,24 +52,19 @@ var myNoise = FastNoiseLite.new()
 var myNoise2 = FastNoiseLite.new()
 var player
 
+
 func _ready():
 	myNoise.seed = randi()
 	myNoise2.seed = randi()
 	myNoise.frequency = 0.01
 
+
 func _process(_delta):
 	if !is_game_over:
 		player_tile_pos = local_to_map(player.position)
-		print(len(loaded))
-		
-		
-		
 		generate_chunk(player_tile_pos)
-				
-		
 		unload_distant_chunks(player_tile_pos)
 
-	
 
 func mapping_noise_values_to_coordinates(noiseValueX,noiseValueY, p, texture_loc): #the range of noseValue is [-1,1]
 	var x = floor((noiseValueX + 1) * 50)
@@ -79,7 +74,6 @@ func mapping_noise_values_to_coordinates(noiseValueX,noiseValueY, p, texture_loc
 		x = 99 
 	if y == 100:
 		y = 99
-
 	for texture in p:
 		p_total += p[texture]
 		if x <= p_total * 100 - 1:
@@ -90,24 +84,18 @@ func generate_chunk(pos):
 
 	for x in range(width):
 		for y in range(height):
-			
-				var tileX = pos.x - width/2 + x
-				var tileY = pos.y - height/2 + y
-				var noiseValue = myNoise.get_noise_2d(tileX, tileY)
-				var noiseValue2 = myNoise2.get_noise_2d(tileX, tileY)
-
-				var v2 = mapping_noise_values_to_coordinates(noiseValue, noiseValue2,probability, texture_location)
-
-				if Vector2i(tileX,tileY) not in loaded:
-					loaded[Vector2i(tileX,tileY)] = v2
-				
-					set_cell(0, Vector2i(tileX, tileY), 0, v2)
-				else:
-					set_cell(0, Vector2i(tileX, tileY), 0, loaded[Vector2i(tileX,tileY)])
-					
-				
-				if pos not in loaded_chunks:
-					loaded_chunks.append(pos)
+			var tileX = pos.x - width/2 + x
+			var tileY = pos.y - height/2 + y
+			var noiseValue = myNoise.get_noise_2d(tileX, tileY)
+			var noiseValue2 = myNoise2.get_noise_2d(tileX, tileY)
+			var v2 = mapping_noise_values_to_coordinates(noiseValue, noiseValue2,probability, texture_location)
+			if Vector2i(tileX,tileY) not in loaded:
+				loaded[Vector2i(tileX,tileY)] = v2
+				set_cell(0, Vector2i(tileX, tileY), 0, v2)
+			else:
+				set_cell(0, Vector2i(tileX, tileY), 0, loaded[Vector2i(tileX,tileY)])
+			if pos not in loaded_chunks:
+				loaded_chunks.append(pos)
 	
 
 
